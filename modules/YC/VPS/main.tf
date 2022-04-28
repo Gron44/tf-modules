@@ -14,7 +14,7 @@ data "yandex_compute_image" "vps_image" {
 resource "yandex_compute_instance" "vps" {
     count       = length(var.devs)
     name        = var.devs[count.index].count == 1 ? "${var.devs[count.index].prefix}-${var.student}-${var.labels.task_name}" : "${var.devs[count.index].prefix}-${count.index}-${var.student}-${var.labels.task_name}"
-    hostname    = var.devs[count.index].count == 1 ? "${var.devs[count.index].prefix}" : "${var.devs[count.index].prefix}-${count.index}"
+    hostname    = var.devs[count.index].count == 1 ? "${var.devs[count.index].prefix}-${var.labels.task_name}" : "${var.devs[count.index].prefix}-${count.index}-${var.labels.task_name}"
     platform_id = "standard-v1"
     zone        = "ru-central1-a"
 
