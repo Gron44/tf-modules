@@ -26,9 +26,9 @@ resource "yandex_compute_instance" "vps" {
     }
 
     resources {
-        cores         = 2
-        memory        = 2
-        core_fraction = 5
+        cores         = var.vps_resources.cores
+        memory        = var.vps_resources.memory
+        core_fraction = var.vps_resources.core_fraction
     }
 
     scheduling_policy {
@@ -63,10 +63,6 @@ resource "yandex_compute_instance" "vps" {
             user        = var.vps_metadata.ssh_admin_user
             private_key = "${file(var.private_key)}"
             host        = "${self.network_interface[0].nat_ip_address}"
-
-            # bastion_host        = var.bastion_host
-            # bastion_user        = var.bastion_user
-            # bastion_private_key = var.bastion_private_key
         }
     }
 
@@ -81,16 +77,3 @@ resource "yandex_compute_instance" "vps" {
         command = "./init.sh down ${self.network_interface[0].nat_ip_address} ${self.labels.group}"
     }
 }
-
-
-# # Provision file with vps metadata
-# resource "local_file" "vps_metadata" {
-#   content = templatefile(
-#     "${path.module}/vps_metadata.tpl",
-#     {
-#       ssh_keys = var.vps_metadata.ssh_keys
-#       ssh_admin_user = var.vps_metadata.ssh_admin_user
-#       ssh_admin_password_salted_hash = var.vps_metadata.ssh_admin_password_salted_hash
-#     })
-#   filename = "vps_metadata.yml"
-# }

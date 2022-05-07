@@ -47,3 +47,19 @@ variable "private_key" {
   type = string
   description = "Path to ssh private key"
 }
+
+variable "vps_resources" {
+  type = object({
+    cores         = number
+    memory        = number
+    core_fraction = number
+  })
+
+  default = {
+    cores         = 2
+    memory        = 2
+    core_fraction = 5
+  }
+
+  description = "VPS resources"
+}
