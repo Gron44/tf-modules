@@ -14,7 +14,6 @@ resource "yandex_compute_image" "vps_image" {
         homework_tag = var.labels.homework_tag
         user_email   = var.labels.user_email
         task_name    = var.labels.task_name
-        group        = var.devs[count.index].group
     }
 }
 
