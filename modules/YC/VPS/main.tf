@@ -34,9 +34,9 @@ resource "yandex_compute_instance" "vps" {
     }
 
     resources {
-        cores         = 2
-        memory        = 2
-        core_fraction = 5
+        cores         = var.vps_resources.cores
+        memory        = var.vps_resources.memory
+        core_fraction = var.vps_resources.core_fraction
     }
 
     scheduling_policy {
