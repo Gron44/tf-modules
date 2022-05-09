@@ -5,10 +5,18 @@ variable "vpc_subnet" {
 }
 
 variable "vps_image" {
-  type = string
-  description = "Name of the vps image"
-  default = "ubuntu-2004-lts"
-#   default = "container-optimized-image"
+  type = object({
+    source_family = string
+    min_disk_size = number
+  })
+
+  default = {
+    source_family = "ubuntu-2004-lts"
+    # source_family = "container-optimized-image"
+    min_disk_size = 5
+    }
+
+  description = "VPS image metadata"
 }
 
 variable "labels" {

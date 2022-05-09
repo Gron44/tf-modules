@@ -6,8 +6,16 @@ data "yandex_vpc_subnet" "vpc_subnet" {
   name = var.vpc_subnet
 }
 
-data "yandex_compute_image" "vps_image" {
-    family = var.vps_image
+resource "yandex_compute_image" "vps_image" {
+  source_family = var.vps_image.source_family
+  min_disk_size = var.vps_image.min_disk_size
+
+  labels = {
+        homework_tag = var.labels.homework_tag
+        user_email   = var.labels.user_email
+        task_name    = var.labels.task_name
+        group        = var.devs[count.index].group
+    }
 }
 
 
@@ -37,7 +45,7 @@ resource "yandex_compute_instance" "vps" {
 
     boot_disk {
         initialize_params {
-            image_id = data.yandex_compute_image.vps_image.id
+            image_id = yandex_compute_image.vps_image.id
         }
     }
 
