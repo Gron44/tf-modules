@@ -3,34 +3,24 @@
 ############################################################
 
 data "yandex_vpc_subnet" "vpc_subnet" {
-  name = var.vpc_subnet
+    name = var.vpc_subnet
 }
 
 resource "yandex_compute_image" "vps_image" {
-  source_family = var.vps_image.source_family
-  min_disk_size = var.vps_image.min_disk_size
+    source_family = lookup(var.vps_image, "source_family", "ubuntu-2004-lts")
+    min_disk_size = lookup(var.vps_image, "min_disk_size", 5)
 
-  labels = {
-        homework_tag = var.labels.homework_tag
-        user_email   = var.labels.user_email
-        task_name    = var.labels.task_name
-    }
+    labels = var.labels
 }
 
 
 resource "yandex_compute_instance" "vps" {
-    count       = length(var.devs)
-    name        = var.devs[count.index].count == 1 ? "${var.devs[count.index].prefix}-${var.student}-${var.labels.task_name}" : "${var.devs[count.index].prefix}-${count.index}-${var.student}-${var.labels.task_name}"
-    hostname    = var.devs[count.index].count == 1 ? "${var.devs[count.index].prefix}" : "${var.devs[count.index].prefix}-${count.index}"
+    name        = var.name
+    hostname    = var.hostname
     platform_id = "standard-v1"
     zone        = "ru-central1-a"
 
-    labels = {
-        homework_tag = var.labels.homework_tag
-        user_email   = var.labels.user_email
-        task_name    = var.labels.task_name
-        group        = var.devs[count.index].group
-    }
+    labels = var.labels
 
     resources {
         cores         = var.vps_resources.cores
@@ -50,54 +40,33 @@ resource "yandex_compute_instance" "vps" {
 
     network_interface {
         subnet_id = data.yandex_vpc_subnet.vpc_subnet.id
-        nat = var.devs[count.index].public_ip
+        nat = lookup(var.dev, "public_ip", true)
     }
 
     metadata = {
         user-data = templatefile(
-            "${path.module}/vps_metadata.tpl", {
-                ssh_keys = var.vps_metadata.ssh_keys
-                ssh_admin_user = var.vps_metadata.ssh_admin_user
-                ssh_admin_password_salted_hash = var.vps_metadata.ssh_admin_password_salted_hash}
-            )
+            "${path.module}/vps_metadata.tpl", var.vps_metadata)
     }
 
-    provisioner "remote-exec" {
-        inline = ["echo 'Wait until SSH is ready'"]
+    # provisioner "remote-exec" {
+    #     inline = ["echo 'Wait until SSH is ready'"]
 
-        connection {
-            type        = "ssh"
-            user        = var.vps_metadata.ssh_admin_user
-            private_key = "${file(var.private_key)}"
-            host        = "${self.network_interface[0].nat_ip_address}"
-
-            # bastion_host        = var.bastion_host
-            # bastion_user        = var.bastion_user
-            # bastion_private_key = var.bastion_private_key
-        }
-    }
+    #     connection {
+    #         type        = "ssh"
+    #         user        = var.vps_metadata.ssh_admin_user
+    #         private_key = "${file(var.private_key)}"
+    #         host        = "${self.network_interface[0].nat_ip_address}"
+    #     }
+    # }
 
     provisioner "local-exec" {
         working_dir = "../ansible"
-        command = "./init.sh up ${self.network_interface[0].nat_ip_address} ${self.labels.group}"
+        command = "./init.sh up ${self.network_interface[0].nat_ip_address} ${self.labels.target}"
     }
 
     provisioner "local-exec" {
         when = destroy
         working_dir = "../ansible"
-        command = "./init.sh down ${self.network_interface[0].nat_ip_address} ${self.labels.group}"
+        command = "./init.sh down ${self.network_interface[0].nat_ip_address} ${self.labels.target}"
     }
 }
-
-
-# # Provision file with vps metadata
-# resource "local_file" "vps_metadata" {
-#   content = templatefile(
-#     "${path.module}/vps_metadata.tpl",
-#     {
-#       ssh_keys = var.vps_metadata.ssh_keys
-#       ssh_admin_user = var.vps_metadata.ssh_admin_user
-#       ssh_admin_password_salted_hash = var.vps_metadata.ssh_admin_password_salted_hash
-#     })
-#   filename = "vps_metadata.yml"
-# }

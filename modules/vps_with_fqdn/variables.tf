@@ -1,27 +1,3 @@
-variable "vpc_subnet" {
-  type = string
-
-  default = "default-ru-central1-a"
-
-  nullable = false
-
-  description = "Name of the subnet"
-}
-
-variable "vps_image" {
-  type = any
-
-  nullable = false
-
-  default = {
-    source_family = "ubuntu-2004-lts"
-    # source_family = "container-optimized-image"
-    min_disk_size = 5
-    }
-
-  description = "VPS image metadata"
-}
-
 variable "vps_resources" {
   type = object({
     cores         = number
@@ -38,6 +14,19 @@ variable "vps_resources" {
   }
 
   description = "VPS resources"
+}
+
+variable "vps_image" {
+  type = any
+
+  nullable = false
+
+  default = {
+    source_family = "ubuntu-2004-lts"
+    min_disk_size = 5
+    }
+
+  description = "VPS image metadata"
 }
 
 variable "labels" {
@@ -84,4 +73,14 @@ variable "vps_metadata" {
 variable "private_key" {
   type = string
   description = "Path to ssh private key"
+}
+
+variable "route53_zone" {
+  type = string
+  description = "Main name aws route53 zone "
+}
+
+variable "site_domain_name" {
+  type = string
+  description = "Site FQDN"
 }
