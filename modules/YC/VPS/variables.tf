@@ -17,7 +17,7 @@ variable "vps_image" {
     source_family = "ubuntu-2004-lts"
     # source_family = "container-optimized-image"
     min_disk_size = 5
-    }
+  }
 
   description = "VPS image metadata"
 }
@@ -41,7 +41,7 @@ variable "vps_resources" {
 }
 
 variable "labels" {
-  type = map
+  type = map(any)
 
   description = "Map of labels"
 }
@@ -62,9 +62,9 @@ variable "dev" {
   type = any
 
   validation {
-    condition = (lookup(var.dev, "name", false) != false  &&
-          contains(["front", "app", "db", "jump_host", "jenkins"],
-              lookup(var.dev, "target", var.dev.name)))
+    condition = (lookup(var.dev, "name", false) != false &&
+      contains(["front", "app", "db", "jump_host", "jenkins"],
+    lookup(var.dev, "target", var.dev.name)))
     error_message = "The dev value must contain object with:\n\nrequiriment key: name\n\noptional key: target (default = name)\n\ntarget must be in [\"front\", \"app\", \"db\", \"jump_host\", \"jenkins\"]."
   }
 
@@ -82,6 +82,6 @@ variable "vps_metadata" {
 }
 
 variable "private_key" {
-  type = string
+  type        = string
   description = "Path to ssh private key"
 }

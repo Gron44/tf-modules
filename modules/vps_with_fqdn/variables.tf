@@ -24,13 +24,13 @@ variable "vps_image" {
   default = {
     source_family = "ubuntu-2004-lts"
     min_disk_size = 5
-    }
+  }
 
   description = "VPS image metadata"
 }
 
 variable "labels" {
-  type = map
+  type = map(any)
 
   description = "Map of labels"
 }
@@ -51,9 +51,9 @@ variable "dev" {
   type = any
 
   validation {
-    condition = (lookup(var.dev, "name", false) != false  &&
-          contains(["front", "app", "db", "jump_host", "jenkins"],
-              lookup(var.dev, "target", var.dev.name)))
+    condition = (lookup(var.dev, "name", false) != false &&
+      contains(["front", "app", "db", "jump_host", "jenkins"],
+    lookup(var.dev, "target", var.dev.name)))
     error_message = "The dev value must contain object with:\n\nrequiriment key: name\n\noptional key: target (default = name)\n\ntarget must be in [\"front\", \"app\", \"db\", \"jump_host\", \"jenkins\"]."
   }
 
@@ -71,16 +71,16 @@ variable "vps_metadata" {
 }
 
 variable "private_key" {
-  type = string
+  type        = string
   description = "Path to ssh private key"
 }
 
 variable "route53_zone" {
-  type = string
+  type        = string
   description = "Main name aws route53 zone "
 }
 
 variable "site_domain_name" {
-  type = string
+  type        = string
   description = "Site FQDN"
 }

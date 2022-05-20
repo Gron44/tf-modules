@@ -5,9 +5,9 @@
 
 output "vps" {
   description = "The labels of this instance"
-  value       = merge(
+  value = merge(
     module.vps.vps,
-    {fqdn = module.fqdn == [] ? null : module.fqdn.0.FQDN}
+    { fqdn = module.fqdn == [] ? null : module.fqdn.0.FQDN }
   )
 }
 
@@ -15,4 +15,3 @@ output "vps" {
 #   description = "Fully Qualified Domain Name "
 #   value       = module.fqdn.0.FQDN
 # }
-
