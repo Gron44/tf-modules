@@ -33,12 +33,12 @@ module fqdn {
   route53_zone = var.route53_zone
   site_domain_name = lookup(var.dev[count.index], "count", 1) == 1 ? (
     format("%s.%s.%s.%s",
-      var.dev[count.index].name, var.default_tags.task_name,
+      var.dev[count.index].name, var.labels.task_name,
       var.student,
       var.route53_zone
     )) : (
     format("%s-%s.%s.%s.%s",
-      var.dev[count.index].name, count.index, var.default_tags.task_name,
+      var.dev[count.index].name, count.index, var.labels.task_name,
       var.student,
       var.route53_zone
     ))
