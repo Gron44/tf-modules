@@ -48,16 +48,16 @@ resource "yandex_compute_instance" "vps" {
             "${path.module}/vps_metadata.tpl", var.vps_metadata)
     }
 
-    # provisioner "remote-exec" {
-    #     inline = ["echo 'Wait until SSH is ready'"]
+    provisioner "remote-exec" {
+        inline = ["echo 'Wait until SSH is ready'"]
 
-    #     connection {
-    #         type        = "ssh"
-    #         user        = var.vps_metadata.ssh_admin_user
-    #         private_key = "${file(var.private_key)}"
-    #         host        = "${self.network_interface[0].nat_ip_address}"
-    #     }
-    # }
+        connection {
+            type        = "ssh"
+            user        = var.vps_metadata.ssh_admin_user
+            private_key = "${file(var.private_key)}"
+            host        = "${self.network_interface[0].nat_ip_address}"
+        }
+    }
 
     provisioner "local-exec" {
         working_dir = "../ansible"
