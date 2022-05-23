@@ -82,8 +82,3 @@ variable "route53_zone" {
   type = string
   description = "Main name aws route53 zone "
 }
-
-variable "site_domain_name" {
-  type = string
-  description = "Site FQDN"
-}
