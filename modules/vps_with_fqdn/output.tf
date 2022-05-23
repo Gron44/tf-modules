@@ -9,7 +9,7 @@ output "vps" {
     for x in range(length(module.vps)):
       merge(
         module.vps[x].vps,
-        {fqdn = module.fqdn == [] ? null : module.fqdn[x].FQDN}
+        {fqdn = module.fqdn == [] ? null : module.fqdn[x].FQDN})
   ]
 }
 
@@ -17,4 +17,3 @@ output "vps" {
 #   description = "Fully Qualified Domain Name "
 #   value       = module.fqdn.0.FQDN
 # }
-
