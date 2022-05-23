@@ -29,7 +29,7 @@ resource "yandex_compute_instance" "vps" {
     }
 
     scheduling_policy {
-        preemptible = lookup(var.dev, "preemptible", true)
+        preemptible = lookup(var.dev, "preemptible", false)
     }
 
     boot_disk {
