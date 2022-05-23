@@ -3,7 +3,9 @@
 ############################################################
 
 module vps {
-  source = "git::https://github.com/Gron44/tf-modules.git//modules/YC/VPS?ref=v0.0.8"
+  source = "git::https://github.com/Gron44/tf-modules.git//modules/YC/VPS?ref=v0.0.11"
+
+  count = lookup(var.dev, "count", 1)
 
   name        = var.name
   hostname    = var.hostname
@@ -22,9 +24,10 @@ module vps {
 }
 
 module fqdn {
-  count = lookup(var.dev, "fqdn", lookup(var.dev, "public_ip", true)) ? 1 : 0
+  count = lookup(var.dev, "fqdn", lookup(var.dev, "public_ip", true)) ? (
+    lookup(var.dev, "count", 1)) : 0
 
-  source = "git::https://github.com/Gron44/tf-modules.git//modules/AWS/FQDN?ref=v0.0.8"
+  source = "git::https://github.com/Gron44/tf-modules.git//modules/AWS/FQDN?ref=v0.0.11"
 
 
   route53_zone = var.route53_zone

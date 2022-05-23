@@ -5,10 +5,12 @@
 
 output "vps" {
   description = "The labels of this instance"
-  value       = merge(
-    module.vps.vps,
-    {fqdn = module.fqdn == [] ? null : module.fqdn.0.FQDN}
-  )
+  value       = [
+    for x in range(length(module.vps)):
+      merge(
+        module.vps[x].vps,
+        {fqdn = module.fqdn == [] ? null : module.fqdn[x].FQDN}
+  ]
 }
 
 # output "fqdn" {
