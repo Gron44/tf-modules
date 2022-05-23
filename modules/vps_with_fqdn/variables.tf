@@ -47,14 +47,17 @@ variable "hostname" {
   description = "VPS hostname"
 }
 
+variable "student" {
+  type = string
+  description = "Student's login"
+}
+
 variable "dev" {
   type = any
 
   validation {
-    condition = (lookup(var.dev, "name", false) != false  &&
-          contains(["front", "app", "db", "jump_host", "jenkins", "jenkins_slave"],
-              lookup(var.dev, "target", var.dev.name)))
-    error_message = "The dev value must contain object with:\n\nrequiriment key: name\n\noptional key: target (default = name)\n\ntarget must be in [\"front\", \"app\", \"db\", \"jump_host\", \"jenkins\", \"jenkins_slave\"]."
+    condition = (lookup(var.dev, "name", false) != false)
+    error_message = "The dev object must contain requiriment key \"name\"."
   }
 
   description = "Description of the desired environment"

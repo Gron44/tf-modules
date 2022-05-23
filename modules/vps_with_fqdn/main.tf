@@ -31,6 +31,16 @@ module fqdn {
 
 
   route53_zone = var.route53_zone
-  site_domain_name = var.site_domain_name
+  site_domain_name = lookup(var.dev[count.index], "count", 1) == 1 ? (
+    format("%s.%s.%s.%s",
+      var.dev[count.index].name, var.default_tags.task_name,
+      var.student,
+      var.route53_zone
+    )) : (
+    format("%s-%s.%s.%s.%s",
+      var.dev[count.index].name, count.index, var.default_tags.task_name,
+      var.student,
+      var.route53_zone
+    ))
   records = [module.vps[count.index].vps.network_interface[0].nat_ip_address]
 }
