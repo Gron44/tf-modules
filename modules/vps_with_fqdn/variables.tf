@@ -35,18 +35,6 @@ variable "labels" {
   description = "Map of labels"
 }
 
-variable "name" {
-  type = string
-
-  description = "VPS name"
-}
-
-variable "hostname" {
-  type = string
-
-  description = "VPS hostname"
-}
-
 variable "student" {
   type = string
   description = "Student's login"

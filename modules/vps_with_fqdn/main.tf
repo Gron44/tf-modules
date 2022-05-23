@@ -3,12 +3,33 @@
 ############################################################
 
 module vps {
-  source = "git::https://github.com/Gron44/tf-modules.git//modules/YC/VPS?ref=v0.0.20"
+  source = "git::https://github.com/Gron44/tf-modules.git//modules/YC/VPS?ref=v0.0.21"
 
   count = lookup(var.dev, "count", 1)
 
-  name        = var.name
-  hostname    = var.hostname
+  name = lookup(var.dev, "count", 1) == 1 ? (
+    format("%s-%s-%s",
+      var.dev.name,
+      var.student,
+      var.labels.task_name
+      )) : (
+    format("%s-%s-%s-%s",
+      var.dev.name,
+      count.index+1,
+      var.student,
+      var.labels.task_name
+      ))
+
+  hostname = lookup(var.dev, "count", 1) == 1 ? (
+    format("%s-%s",
+      var.dev.name,
+      var.labels.task_name
+      )) : (
+    format("%s-%s-%s",
+      var.dev.name,
+      count.index+1,
+      var.labels.task_name
+      ))
 
   dev = var.dev
 
@@ -27,7 +48,7 @@ module fqdn {
   count = lookup(var.dev, "fqdn", lookup(var.dev, "public_ip", true)) ? (
     lookup(var.dev, "count", 1)) : 0
 
-  source = "git::https://github.com/Gron44/tf-modules.git//modules/AWS/FQDN?ref=v0.0.20"
+  source = "git::https://github.com/Gron44/tf-modules.git//modules/AWS/FQDN?ref=v0.0.21"
 
 
   route53_zone = var.route53_zone
@@ -38,7 +59,7 @@ module fqdn {
       var.route53_zone
     )) : (
     format("%s-%s.%s.%s.%s",
-      var.dev.name, count.index, var.labels.task_name,
+      var.dev.name, count.index+1, var.labels.task_name,
       var.student,
       var.route53_zone
     ))
