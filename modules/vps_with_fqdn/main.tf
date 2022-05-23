@@ -32,5 +32,5 @@ module fqdn {
 
   route53_zone = var.route53_zone
   site_domain_name = var.site_domain_name
-  records = [module.vps.vps.network_interface[0].nat_ip_address]
+  records = [module.vps[count.index].vps.network_interface[0].nat_ip_address]
 }
